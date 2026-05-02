@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NexaCore – Tech Agency</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    * { scroll-behavior: smooth; }
+
+    /* ── Custom scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 999px; }
+
+    /* ── Gradient text ── */
+    .grad-text {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Hero animated gradient bg ── */
+    .hero-bg {
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, #312e81 0%, #0f172a 70%);
+    }
+
+    /* ── Glow button ── */
+    .btn-glow {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      box-shadow: 0 0 24px rgba(99,102,241,.45);
+      transition: box-shadow .3s, transform .2s;
+    }
+    .btn-glow:hover {
+      box-shadow: 0 0 40px rgba(168,85,247,.65);
+      transform: translateY(-2px);
+    }
+
+    /* ── Card hover ── */
+    .service-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(99,102,241,.5);
+      box-shadow: 0 8px 40px rgba(99,102,241,.2);
+    }
+
+    /* ── Counter animation ── */
+    .stat-num { font-variant-numeric: tabular-nums; }
+
+    /* ── Nav blur ── */
+    .nav-blur {
+      background: rgba(15,23,42,.7);
+      backdrop-filter: blur(16px);
+    }
+
+    /* ── Floating shapes ── */
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: .25;
+      animation: float 8s ease-in-out infinite;
+    }
+    .shape-1 { width:340px;height:340px; background:#6366f1; top:-80px; left:-80px; animation-delay:0s; }
+    .shape-2 { width:260px;height:260px; background:#a855f7; top:40%; right:-60px; animation-delay:3s; }
+    .shape-3 { width:200px;height:200px; background:#ec4899; bottom:0; left:30%; animation-delay:6s; }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* ── Fade-in on scroll ── */
+    .reveal { opacity:0; transform:translateY(40px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* ── Tech ticker ── */
+    .ticker-track {
+      display: flex;
+      gap: 2.5rem;
+      animation: ticker 22s linear infinite;
+      width: max-content;
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── Mobile menu ── */
+    #mobile-menu { transition: max-height .4s ease, opacity .4s ease; max-height:0; opacity:0; overflow:hidden; }
+    #mobile-menu.open { max-height:400px; opacity:1; }
+
+    /* ── Form input focus ── */
+    .form-input:focus { outline:none; border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.25); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased">
+
+<!-- ════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 inset-x-0 z-50 nav-blur border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2 text-xl font-bold tracking-tight">
+      <span class="w-8 h-8 rounded-lg btn-glow flex items-center justify-center text-white text-sm">N</span>
+      <span class="grad-text">NexaCore</span>
+    </a>
+
+    <!-- Desktop links -->
+    <ul class="hidden md:flex items-center gap-8 text-sm text-slate-400">
+      <li><a href="#services"   class="hover:text-white transition">Services</a></li>
+      <li><a href="#work"       class="hover:text-white transition">Work</a></li>
+      <li><a href="#about"      class="hover:text-white transition">About</a></li>
+      <li><a href="#team"       class="hover:text-white transition">Team</a></li>
+      <li><a href="#contact"    class="hover:text-white transition">Contact</a></li>
+    </ul>
+
+    <a href="#contact" class="hidden md:inline-flex btn-glow text-white text-sm font-semibold px-5 py-2.5 rounded-full">
+      Get Started
+    </a>
+
+    <!-- Hamburger -->
+    <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 p-2">
+      <span class="block w-6 h-0.5 bg-slate-300 transition-all duration-300" id="bar1"></span>
+      <span class="block w-6 h-0.5 bg-slate-300 transition-all duration-300" id="bar2"></span>
+      <span class="block w-6 h-0.5 bg-slate-300 transition-all duration-300" id="bar3"></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="md:hidden bg-slate-900/95 px-6 pb-4">
+    <ul class="flex flex-col gap-4 pt-4 text-slate-300 text-sm">
+      <li><a href="#services" class="block hover:text-white" onclick="closeMobileMenu()">Services</a></li>
+      <li><a href="#work"     class="block hover:text-white" onclick="closeMobileMenu()">Work</a></li>
+      <li><a href="#about"    class="block hover:text-white" onclick="closeMobileMenu()">About</a></li>
+      <li><a href="#team"     class="block hover:text-white" onclick="closeMobileMenu()">Team</a></li>
+      <li><a href="#contact"  class="block hover:text-white" onclick="closeMobileMenu()">Contact</a></li>
+      <li><a href="#contact" class="btn-glow inline-block text-white text-sm font-semibold px-5 py-2.5 rounded-full mt-2" onclick="closeMobileMenu()">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+<section class="hero-bg relative overflow-hidden min-h-screen flex items-center pt-16">
+  <div class="shape shape-1"></div>
+  <div class="shape shape-2"></div>
+  <div class="shape shape-3"></div>
+
+  <div class="max-w-7xl mx-auto px-6 py-24 text-center relative z-10">
+    <span class="inline-block text-xs font-semibold tracking-widest uppercase text-indigo-400 border border-indigo-500/40 bg-indigo-500/10 px-4 py-1.5 rounded-full mb-6">
+      🚀 Welcome to the Future of Tech
+    </span>
+
+    <h1 class="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight mb-6">
+      We Build Digital<br/>
+      <span class="grad-text">Experiences That</span><br/>
+      Move the World
+    </h1>
+
+    <p class="max-w-2xl mx-auto text-lg text-slate-400 mb-10 leading-relaxed">
+      NexaCore is a full-service technology agency crafting cutting-edge web apps, mobile solutions,
+      and scalable cloud infrastructure for ambitious businesses worldwide.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="#services" class="btn-glow text-white font-semibold px-8 py-3.5 rounded-full text-sm">
+        Explore Our Services
+      </a>
+      <a href="#work" class="text-slate-300 hover:text-white border border-white/15 hover:border-white/30 px-8 py-3.5 rounded-full text-sm font-semibold transition">
+        View Our Work ↓
+      </a>
+    </div>
+
+    <!-- Stats row -->
+    <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+      <div class="service-card rounded-2xl p-5">
+        <p class="stat-num text-3xl font-extrabold grad-text" data-target="150">0</p>
+        <p class="text-slate-400 text-sm mt-1">Projects Delivered</p>
+      </div>
+      <div class="service-card rounded-2xl p-5">
+        <p class="stat-num text-3xl font-extrabold grad-text" data-target="98">0</p>
+        <p class="text-slate-400 text-sm mt-1">Client Satisfaction %</p>
+      </div>
+      <div class="service-card rounded-2xl p-5">
+        <p class="stat-num text-3xl font-extrabold grad-text" data-target="12">0</p>
+        <p class="text-slate-400 text-sm mt-1">Years Experience</p>
+      </div>
+      <div class="service-card rounded-2xl p-5">
+        <p class="stat-num text-3xl font-extrabold grad-text" data-target="40">0</p>
+        <p class="text-slate-400 text-sm mt-1">Expert Engineers</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     TECH TICKER
+════════════════════════════════════════ -->
+<div class="bg-slate-900/60 border-y border-white/5 py-4 overflow-hidden">
+  <div class="ticker-track text-slate-500 text-sm font-medium select-none">
+    <!-- duplicated for seamless loop -->
+    <span>React</span><span>·</span><span>Next.js</span><span>·</span>
+    <span>TypeScript</span><span>·</span><span>Node.js</span><span>·</span>
+    <span>Python</span><span>·</span><span>AWS</span><span>·</span>
+    <span>Docker</span><span>·</span><span>Kubernetes</span><span>·</span>
+    <span>GraphQL</span><span>·</span><span>PostgreSQL</span><span>·</span>
+    <span>Tailwind CSS</span><span>·</span><span>Vue.js</span><span>·</span>
+    <span>React</span><span>·</span><span>Next.js</span><span>·</span>
+    <span>TypeScript</span><span>·</span><span>Node.js</span><span>·</span>
+    <span>Python</span><span>·</span><span>AWS</span><span>·</span>
+    <span>Docker</span><span>·</span><span>Kubernetes</span><span>·</span>
+    <span>GraphQL</span><span>·</span><span>PostgreSQL</span><span>·</span>
+    <span>Tailwind CSS</span><span>·</span><span>Vue.js</span><span>·</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SERVICES
+════════════════════════════════════════ -->
+<section id="services" class="py-28 max-w-7xl mx-auto px-6">
+  <div class="text-center mb-16 reveal">
+    <span class="text-indigo-400 text-xs font-semibold tracking-widest uppercase">What We Do</span>
+    <h2 class="text-4xl md:text-5xl font-extrabold mt-3 mb-4">Our <span class="grad-text">Services</span></h2>
+    <p class="text-slate-400 max-w-xl mx-auto">End-to-end technology services tailored to propel your business forward.</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- Card -->
+    <div class="service-card rounded-2xl p-7 reveal">
+      <div class="w-12 h-12 rounded-xl bg-indigo-500/15 flex items-center justify-center text-2xl mb-5">🌐</div>
+      <h3 class="text-lg font-bold mb-2">Web Development</h3>
+      <p class="text-slate-400 text-sm leading-relaxed">High-performance, responsive websites and web applications built with the latest frameworks and best practices.</p>
+    </div>
+
+    <div class="service-card rounded-2xl p-7 reveal">
+      <div class="w-12 h-12 rounded-xl bg-purple-500/15 flex items-center justify-center text-2xl mb-5">📱</div>
+      <h3 class="text-lg font-bold mb-2">Mobile Apps</h3>
+      <p class="text-slate-400 text-sm leading-relaxed">Native and cross-platform iOS & Android apps with beautiful UX that users love to interact with.</p>
+    </div>
+
+    <div class="service-card rounded-2xl p-7 reveal">
+      <div class="w-12 h-12 rounded-xl bg-pink-500/15 flex items-center justify-center text-2xl mb-5">☁️</div>
+      <h3 class="text-lg font-bold mb-2">Cloud & DevOps</h3>
+      <p class="text-slate-400 text-sm leading-relaxed">Scalable cloud architecture, CI/CD pipelines, container orchestration and 24/7 monitoring.</p>
+    </div>
+
+    <div class="service-card rounded-2xl p-7 reveal">
+      <div class="w-12 h-12 rounded-xl bg-cyan-500/15 flex items-center justify-center text-2xl mb-5">🤖</div>
+      <h3 class="text-lg font-bold mb-2">AI & Machine Learning</h3>
+      <p class="text-slate-400 text-sm leading-relaxed">Custom AI models, NLP pipelines, recommendation engines, and intelligent automation for your business.</p>
+    </div>
+
+    <div class="service-card rounded-2xl p-7 reveal">
+      <div class="w-12 h-12 rounded-xl bg-emerald-500/15 flex items-center justify-center text-2xl mb-5">🎨</div>
+      <h3 class="text-lg font-bold mb-2">UI/UX Design</h3>
+      <p class="text-slate-400 text-sm leading-relaxed">User research, wireframing, prototyping, and pixel-perfect design systems that delight your audience.</p>
+    </div>
+
+    <div class="service-card rounded-2xl p-7 reveal">
+      <div class="w-12 h-12 rounded-xl bg-orange-500/15 flex items-center justify-center text-2xl mb-5">🔒</div>
+      <h3 class="text-lg font-bold mb-2">Cybersecurity</h3>
+      <p class="text-slate-400 text-sm leading-relaxed">Penetration testing, security audits, compliance consulting, and robust vulnerability management.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     WORK / PORTFOLIO
+════════════════════════════════════════ -->
+<section id="work" class="py-28 bg-slate-900/40 border-y border-white/5">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="text-indigo-400 text-xs font-semibold tracking-widest uppercase">Portfolio</span>
+      <h2 class="text-4xl md:text-5xl font-extrabold mt-3 mb-4">Featured <span class="grad-text">Work</span></h2>
+      <p class="text-slate-400 max-w-xl mx-auto">A selection of projects we're proud to have shipped.</p>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="flex flex-wrap justify-center gap-3 mb-10 reveal" id="filter-tabs">
+      <button onclick="filterProjects('all')"       class="filter-btn active-tab px-5 py-2 rounded-full text-sm font-medium border transition">All</button>
+      <button onclick="filterProjects('web')"       class="filter-btn px-5 py-2 rounded-full text-sm font-medium border border-white/10 text-slate-400 hover:text-white transition">Web</button>
+      <button onclick="filterProjects('mobile')"    class="filter-btn px-5 py-2 rounded-full text-sm font-medium border border-white/10 text-slate-400 hover:text-white transition">Mobile</button>
+      <button onclick="filterProjects('ai')"        class="filter-btn px-5 py-2 rounded-full text-sm font-medium border border-white/10 text-slate-400 hover:text-white transition">AI</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid">
+
+      <div class="project-card service-card rounded-2xl overflow-hidden reveal" data-cat="web">
+        <div class="h-44 bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-5xl">🛒</div>
+        <div class="p-6">
+          <span class="text-xs text-indigo-400 font-semibold uppercase tracking-wider">Web · E-commerce</span>
+          <h3 class="font-bold text-lg mt-1 mb-2">ShopFlow Platform</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">A headless commerce platform serving 2M+ users with real-time inventory and AI-powered recommendations.</p>
+        </div>
+      </div>
+
+      <div class="project-card service-card rounded-2xl overflow-hidden reveal" data-cat="mobile">
+        <div class="h-44 bg-gradient-to-br from-pink-600 to-rose-700 flex items-center justify-center text-5xl">🏃</div>
+        <div class="p-6">
+          <span class="text-xs text-pink-400 font-semibold uppercase tracking-wider">Mobile · Health</span>
+          <h3 class="font-bold text-lg mt-1 mb-2">FitSync App</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Cross-platform fitness companion with biometric tracking, AI coaching, and social challenges.</p>
+        </div>
+      </div>
+
+      <div class="project-card service-card rounded-2xl overflow-hidden reveal" data-cat="ai">
+        <div class="h-44 bg-gradient-to-br from-cyan-600 to-teal-700 flex items-center justify-center text-5xl">🧠</div>
+        <div class="p-6">
+          <span class="text-xs text-cyan-400 font-semibold uppercase tracking-wider">AI · Analytics</span>
+          <h3 class="font-bold text-lg mt-1 mb-2">Predictix Insights</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Enterprise ML dashboard delivering predictive analytics and automated anomaly detection.</p>
+        </div>
+      </div>
+
+      <div class="project-card service-card rounded-2xl overflow-hidden reveal" data-cat="web">
+        <div class="h-44 bg-gradient-to-br from-emerald-600 to-green-700 flex items-center justify-center text-5xl">🌍</div>
+        <div class="p-6">
+          <span class="text-xs text-emerald-400 font-semibold uppercase tracking-wider">Web · SaaS</span>
+          <h3 class="font-bold text-lg mt-1 mb-2">GreenMetrics</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Carbon footprint SaaS tool for enterprises, integrating with 50+ ERP systems globally.</p>
+        </div>
+      </div>
+
+      <div class="project-card service-card rounded-2xl overflow-hidden reveal" data-cat="mobile">
+        <div class="h-44 bg-gradient-to-br from-orange-600 to-amber-600 flex items-center justify-center text-5xl">🍔</div>
+        <div class="p-6">
+          <span class="text-xs text-orange-400 font-semibold uppercase tracking-wider">Mobile · Food-tech</span>
+          <h3 class="font-bold text-lg mt-1 mb-2">QuickBite</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">On-demand food delivery app with real-time driver tracking, live ETA, and loyalty rewards.</p>
+        </div>
+      </div>
+
+      <div class="project-card service-card rounded-2xl overflow-hidden reveal" data-cat="ai">
+        <div class="h-44 bg-gradient-to-br from-violet-600 to-fuchsia-700 flex items-center justify-center text-5xl">💬</div>
+        <div class="p-6">
+          <span class="text-xs text-violet-400 font-semibold uppercase tracking-wider">AI · Support</span>
+          <h3 class="font-bold text-lg mt-1 mb-2">ChatCore AI</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Multilingual AI customer support agent reducing ticket volume by 65% for enterprise clients.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════ -->
+<section id="about" class="py-28 max-w-7xl mx-auto px-6">
+  <div class="grid md:grid-cols-2 gap-16 items-center">
+    <!-- Left -->
+    <div class="reveal">
+      <span class="text-indigo-400 text-xs font-semibold tracking-widest uppercase">About NexaCore</span>
+      <h2 class="text-4xl md:text-5xl font-extrabold mt-3 mb-6 leading-tight">
+        Turning bold ideas into <span class="grad-text">digital reality</span>
+      </h2>
+      <p class="text-slate-400 leading-relaxed mb-5">
+        Founded in 2012, NexaCore has grown from a 3-person startup into a 40+ strong team of engineers,
+        designers, and strategists. We partner with startups and Fortune 500 companies alike to design,
+        build, and scale transformative technology products.
+      </p>
+      <p class="text-slate-400 leading-relaxed mb-8">
+        Our agile-first approach, transparent communication, and obsessive focus on quality have earned us
+        a 98% client satisfaction rate and long-term partnerships that span years.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-5 py-3">
+          <span class="text-2xl">🏆</span>
+          <div>
+            <p class="font-semibold text-sm">Award Winning</p>
+            <p class="text-slate-500 text-xs">Top Agency 2023</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-5 py-3">
+          <span class="text-2xl">🌏</span>
+          <div>
+            <p class="font-semibold text-sm">Global Reach</p>
+            <p class="text-slate-500 text-xs">25+ Countries Served</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-5 py-3">
+          <span class="text-2xl">⚡</span>
+          <div>
+            <p class="font-semibold text-sm">Rapid Delivery</p>
+            <p class="text-slate-500 text-xs">MVP in 6 Weeks</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right – Process timeline -->
+    <div class="reveal">
+      <div class="space-y-6">
+        <div class="flex gap-5">
+          <div class="flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full btn-glow flex items-center justify-center font-bold text-sm shrink-0">1</div>
+            <div class="w-px flex-1 bg-indigo-500/20 mt-2"></div>
+          </div>
+          <div class="pb-6">
+            <h4 class="font-bold mb-1">Discovery & Strategy</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">Deep dive workshops to understand your goals, users, and competitive landscape.</p>
+          </div>
+        </div>
+        <div class="flex gap-5">
+          <div class="flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full btn-glow flex items-center justify-center font-bold text-sm shrink-0">2</div>
+            <div class="w-px flex-1 bg-indigo-500/20 mt-2"></div>
+          </div>
+          <div class="pb-6">
+            <h4 class="font-bold mb-1">Design & Prototype</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">Iterative UX design, rapid prototyping, and user testing cycles.</p>
+          </div>
+        </div>
+        <div class="flex gap-5">
+          <div class="flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full btn-glow flex items-center justify-center font-bold text-sm shrink-0">3</div>
+            <div class="w-px flex-1 bg-indigo-500/20 mt-2"></div>
+          </div>
+          <div class="pb-6">
+            <h4 class="font-bold mb-1">Build & Test</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">Agile sprints, rigorous QA, and continuous integration for flawless delivery.</p>
+          </div>
+        </div>
+        <div class="flex gap-5">
+          <div class="flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full btn-glow flex items-center justify-center font-bold text-sm shrink-0">4</div>
+          </div>
+          <div>
+            <h4 class="font-bold mb-1">Launch & Scale</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">Smooth deployment, performance monitoring, and ongoing growth support.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     TESTIMONIALS
+════════════════════════════════════════ -->
+<section class="py-28 bg-slate-900/40 border-y border-white/5">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="text-indigo-400 text-xs font-semibold tracking-widest uppercase">Testimonials</span>
+      <h2 class="text-4xl md:text-5xl font-extrabold mt-3">What Clients <span class="grad-text">Say</span></h2>
+    </div>
+
+    <div class="relative overflow-hidden" id="testimonial-container">
+      <div class="flex transition-transform duration-700 ease-in-out" id="testimonial-track">
+
+        <div class="min-w-full px-4">
+          <div class="max-w-2xl mx-auto service-card rounded-2xl p-10 text-center">
+            <p class="text-4xl mb-6">⭐⭐⭐⭐⭐</p>
+            <p class="text-slate-300 text-lg italic leading-relaxed mb-6">"NexaCore transformed our outdated platform into a modern, scalable powerhouse. The team's expertise and professionalism are second to none. We saw a 3× increase in conversions within two months."</p>
+            <div class="flex items-center justify-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold">S</div>
+              <div class="text-left">
+                <p class="font-semibold">Sarah Mitchell</p>
+                <p class="text-slate-500 text-sm">CTO, Streamline Inc.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="min-w-full px-4">
+          <div class="max-w-2xl mx-auto service-card rounded-2xl p-10 text-center">
+            <p class="text-4xl mb-6">⭐⭐⭐⭐⭐</p>
+            <p class="text-slate-300 text-lg italic leading-relaxed mb-6">"From ideation to launch in under 8 weeks — NexaCore delivered our MVP on time and under budget. Their AI recommendations feature became our #1 differentiator in the market."</p>
+            <div class="flex items-center justify-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center font-bold">J</div>
+              <div class="text-left">
+                <p class="font-semibold">James Okafor</p>
+                <p class="text-slate-500 text-sm">Founder, Predictix</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="min-w-full px-4">
+          <div class="max-w-2xl mx-auto service-card rounded-2xl p-10 text-center">
+            <p class="text-4xl mb-6">⭐⭐⭐⭐⭐</p>
+            <p class="text-slate-300 text-lg italic leading-relaxed mb-6">"The cloud migration NexaCore executed saved us 40% on infrastructure costs while improving uptime to 99.99%. Truly exceptional work from a world-class team."</p>
+            <div class="flex items-center justify-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center font-bold">A</div>
+              <div class="text-left">
+                <p class="font-semibold">Aiko Tanaka</p>
+                <p class="text-slate-500 text-sm">VP Engineering, NovaTech</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Dots -->
+      <div class="flex justify-center gap-2 mt-8" id="testimonial-dots">
+        <button class="dot w-2.5 h-2.5 rounded-full bg-indigo-500 transition-all" onclick="goToSlide(0)"></button>
+        <button class="dot w-2.5 h-2.5 rounded-full bg-white/20 transition-all" onclick="goToSlide(1)"></button>
+        <button class="dot w-2.5 h-2.5 rounded-full bg-white/20 transition-all" onclick="goToSlide(2)"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     TEAM
+════════════════════════════════════════ -->
+<section id="team" class="py-28 max-w-7xl mx-auto px-6">
+  <div class="text-center mb-16 reveal">
+    <span class="text-indigo-400 text-xs font-semibold tracking-widest uppercase">The Team</span>
+    <h2 class="text-4xl md:text-5xl font-extrabold mt-3 mb-4">Meet Our <span class="grad-text">Experts</span></h2>
+    <p class="text-slate-400 max-w-xl mx-auto">Brilliant minds passionate about solving complex problems through technology.</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+    <div class="service-card rounded-2xl p-6 text-center reveal">
+      <div class="w-20 h-20 rounded-full mx-auto bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-3xl mb-4">👩‍💻</div>
+      <h3 class="font-bold text-lg">Elena Cross</h3>
+      <p class="text-indigo-400 text-sm font-medium mb-3">CEO & Co-Founder</p>
+      <p class="text-slate-500 text-xs leading-relaxed">15+ years leading engineering teams. Former Google & Meta engineering lead.</p>
+    </div>
+
+    <div class="service-card rounded-2xl p-6 text-center reveal">
+      <div class="w-20 h-20 rounded-full mx-auto bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-3xl mb-4">👨‍🎨</div>
+      <h3 class="font-bold text-lg">Marcus Lee</h3>
+      <p class="text-pink-400 text-sm font-medium mb-3">Head of Design</p>
+      <p class="text-slate-500 text-xs leading-relaxed">Award-winning designer crafting human-centered digital experiences since 2010.</p>
+    </div>
+
+    <div class="service-card rounded-2xl p-6 text-center reveal">
+      <div class="w-20 h-20 rounded-full mx-auto bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-3xl mb-4">👨‍🔬</div>
+      <h3 class="font-bold text-lg">Priya Nair</h3>
+      <p class="text-cyan-400 text-sm font-medium mb-3">AI / ML Lead</p>
+      <p class="text-slate-500 text-xs leading-relaxed">PhD in Machine Learning. Expert in NLP, computer vision, and deep learning systems.</p>
+    </div>
+
+    <div class="service-card rounded-2xl p-6 text-center reveal">
+      <div class="w-20 h-20 rounded-full mx-auto bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-3xl mb-4">👨‍💼</div>
+      <h3 class="font-bold text-lg">Daniel Park</h3>
+      <p class="text-emerald-400 text-sm font-medium mb-3">Head of Engineering</p>
+      <p class="text-slate-500 text-xs leading-relaxed">Cloud-native architect with deep expertise in distributed systems and DevOps.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     CONTACT
+════════════════════════════════════════ -->
+<section id="contact" class="py-28 bg-slate-900/40 border-t border-white/5">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="text-center mb-12 reveal">
+      <span class="text-indigo-400 text-xs font-semibold tracking-widest uppercase">Let's Talk</span>
+      <h2 class="text-4xl md:text-5xl font-extrabold mt-3 mb-4">Start Your <span class="grad-text">Project</span></h2>
+      <p class="text-slate-400">Tell us about your vision. We'll respond within 24 hours.</p>
+    </div>
+
+    <form id="contact-form" class="service-card rounded-2xl p-8 md:p-10 space-y-5 reveal" onsubmit="handleSubmit(event)">
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">Your Name</label>
+          <input type="text" placeholder="Jane Doe" required
+            class="form-input w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm transition" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">Email Address</label>
+          <input type="email" placeholder="jane@company.com" required
+            class="form-input w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm transition" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-1.5">Service Needed</label>
+        <select class="form-input w-full bg-slate-800 border border-white/10 text-slate-300 rounded-xl px-4 py-3 text-sm transition">
+          <option value="">Select a service…</option>
+          <option>Web Development</option>
+          <option>Mobile App</option>
+          <option>Cloud & DevOps</option>
+          <option>AI / Machine Learning</option>
+          <option>UI/UX Design</option>
+          <option>Cybersecurity</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-1.5">Project Budget</label>
+        <select class="form-input w-full bg-slate-800 border border-white/10 text-slate-300 rounded-xl px-4 py-3 text-sm transition">
+          <option value="">Select budget range…</option>
+          <option>Under $10k</option>
+          <option>$10k – $50k</option>
+          <option>$50k – $150k</option>
+          <option>$150k+</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-1.5">Tell Us About Your Project</label>
+        <textarea rows="5" placeholder="Describe your idea, goals, and any specific requirements…" required
+          class="form-input w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm transition resize-none"></textarea>
+      </div>
+
+      <button type="submit" id="submit-btn"
+        class="btn-glow w-full text-white font-semibold py-3.5 rounded-xl text-sm tracking-wide">
+        Send Message →
+      </button>
+
+      <!-- Success message -->
+      <div id="success-msg" class="hidden text-center py-4">
+        <p class="text-2xl mb-2">🎉</p>
+        <p class="text-emerald-400 font-semibold">Message sent! We'll be in touch within 24 hours.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer class="bg-slate-950 border-t border-white/5 py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+      <!-- Brand -->
+      <div class="md:col-span-2">
+        <a href="#" class="flex items-center gap-2 text-xl font-bold tracking-tight mb-3">
+          <span class="w-8 h-8 rounded-lg btn-glow flex items-center justify-center text-white text-sm">N</span>
+          <span class="grad-text">NexaCore</span>
+        </a>
+        <p class="text-slate-500 text-sm leading-relaxed max-w-xs">
+          A full-service technology agency building tomorrow's digital products today.
+        </p>
+        <div class="flex gap-4 mt-5">
+          <a href="#" class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500 transition text-sm">𝕏</a>
+          <a href="#" class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500 transition text-sm">in</a>
+          <a href="#" class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500 transition text-sm">gh</a>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div>
+        <h4 class="font-semibold text-sm mb-4 text-white">Company</h4>
+        <ul class="space-y-2 text-slate-500 text-sm">
+          <li><a href="#about"    class="hover:text-white transition">About</a></li>
+          <li><a href="#team"     class="hover:text-white transition">Team</a></li>
+          <li><a href="#work"     class="hover:text-white transition">Portfolio</a></li>
+          <li><a href="#contact"  class="hover:text-white transition">Careers</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-sm mb-4 text-white">Services</h4>
+        <ul class="space-y-2 text-slate-500 text-sm">
+          <li><a href="#services" class="hover:text-white transition">Web Development</a></li>
+          <li><a href="#services" class="hover:text-white transition">Mobile Apps</a></li>
+          <li><a href="#services" class="hover:text-white transition">Cloud & DevOps</a></li>
+          <li><a href="#services" class="hover:text-white transition">AI / ML</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-600 text-xs">
+      <p>© 2024 NexaCore Agency. All rights reserved.</p>
+      <div class="flex gap-5">
+        <a href="#" class="hover:text-slate-400 transition">Privacy Policy</a>
+        <a href="#" class="hover:text-slate-400 transition">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+  /* ── Mobile menu ── */
+  const toggle = document.getElementById('menu-toggle');
+  const menu   = document.getElementById('mobile-menu');
+  const bar1   = document.getElementById('bar1');
+  const bar2   = document.getElementById('bar2');
+  const bar3   = document.getElementById('bar3');
+  let menuOpen = false;
+
+  toggle.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    menu.classList.toggle('open', menuOpen);
+    bar1.style.transform = menuOpen ? 'translateY(8px) rotate(45deg)'  : '';
+    bar2.style.opacity   = menuOpen ? '0' : '1';
+    bar3.style.transform = menuOpen ? 'translateY(-8px) rotate(-45deg)' : '';
+  });
+
+  function closeMobileMenu() {
+    menuOpen = false;
+    menu.classList.remove('open');
+    bar1.style.transform = '';
+    bar2.style.opacity   = '1';
+    bar3.style.transform = '';
+  }
+
+  /* ── Scroll reveal ── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  /* ── Animated counters ── */
+  const counters = document.querySelectorAll('[data-target]');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el     = entry.target;
+        const target = +el.dataset.target;
+        const step   = Math.ceil(target / 60);
+        let current  = 0;
+        const timer  = setInterval(() => {
+          current += step;
+          if (current >= target) { current = target; clearInterval(timer); }
+          el.textContent = current + (el.nextElementSibling.textContent.includes('%') ? '' : '+');
+        }, 28);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => counterObserver.observe(c));
+
+  /* ── Portfolio filter ── */
+  function filterProjects(cat) {
+    // Update active tab
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.remove('active-tab', 'border-indigo-500', 'text-white');
+      btn.classList.add('border-white/10', 'text-slate-400');
+    });
+    const btns = document.querySelectorAll('.filter-btn');
+    const idx  = ['all','web','mobile','ai'].indexOf(cat);
+    btns[idx].classList.add('active-tab', 'border-indigo-500', 'text-white');
+    btns[idx].classList.remove('border-white/10', 'text-slate-400');
+
+    document.querySelectorAll('.project-card').forEach(card => {
+      const show = cat === 'all' || card.dataset.cat === cat;
+      card.style.transition = 'opacity .4s, transform .4s';
+      card.style.opacity    = show ? '1' : '0.15';
+      card.style.transform  = show ? 'scale(1)' : 'scale(0.95)';
+    });
+  }
+
+  // Init active tab style
+  document.querySelector('.filter-btn.active-tab').classList.add('border-indigo-500','text-white');
+  document.querySelector('.filter-btn.active-tab').classList.remove('border-white/10','text-slate-400');
+
+  /* ── Testimonial slider ── */
+  let currentSlide = 0;
+  const track = document.getElementById('testimonial-track');
+  const dots  = document.querySelectorAll('.dot');
+
+  function goToSlide(n) {
+    currentSlide = n;
+    track.style.transform = `translateX(-${n * 100}%)`;
+    dots.forEach((d, i) => {
+      d.style.background = i === n ? '#6366f1' : 'rgba(255,255,255,.2)';
+      d.style.width      = i === n ? '28px' : '10px';
+    });
+  }
+
+  // Auto-advance
+  setInterval(() => goToSlide((currentSlide + 1) % 3), 5000);
+
+  /* ── Contact form ── */
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled    = true;
+    setTimeout(() => {
+      document.getElementById('contact-form').reset();
+      btn.style.display = 'none';
+      document.getElementById('success-msg').classList.remove('hidden');
+      setTimeout(() => {
+        btn.style.display   = '';
+        btn.textContent     = 'Send Message →';
+        btn.disabled        = false;
+        document.getElementById('success-msg').classList.add('hidden');
+      }, 4000);
+    }, 1400);
+  }
+
+  /* ── Sticky nav shadow on scroll ── */
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    nav.style.boxShadow = window.scrollY > 20 ? '0 4px 32px rgba(0,0,0,.4)' : '';
+  });
+</script>
+</body>
+</html>
